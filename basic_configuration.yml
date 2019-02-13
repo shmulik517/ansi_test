@@ -1,0 +1,89 @@
+#Cisco IOS 12.2 Hardening Playbook
+#
+#+ no service pad
+#+ ip ssh version 2
+#+ no ip domain-lookup
+#+ no ip http server
+#+ no ip http secure-server
+#+ no cdp run
+#+ transport input ssh
+#+ logging buffered 15000
+
+
+- hosts: ios
+  gather_facts: no
+  connection: local
+
+
+  tasks:
+
+  - name: configure archive
+    ios_config:
+      parents:
+      - archive
+      - log config
+      lines:
+      - logging enable
+      - logging size 1000
+
+  - name: configure the login banner
+    ios_banner:
+      banner: login
+      text: |
+        this is my login banner
+        that contains a multiline
+        string
+      state: present
+
+  - name: NO SERVICE PAD
+    ios_config:
+      lines:
+        - no service pad
+
+  - name: IP SSH VERSION 2
+    ios_config:
+      lines:
+        - ip ssh version 2
+
+  - name: NO IP DOMAIN-LOOKUP
+    ios_config:
+      lines:
+        - no ip domain-lookup
+
+  - name: DISABLE HTTP/HTTPS MANAGMENT (ignore error)
+    ios_config:
+      lines:
+        - no ip http server
+        - no ip http secure-server
+    ignore_errors: True
+
+  - name: CREATE cisco USER
+    ios_config:
+      lines:
+        - username cisco priv 15 pass cisco
+
+  - name: remove all users except admin and cisco
+    ios_user:
+      aggregate:
+      - name: cisco
+      purge: yes
+
+  - name: TRANSPORT INPUT SSH
+    ios_config:
+      parents:
+        - line vty 0 4
+      lines:
+        - transport input ssh
+        - login local
+
+  - name: LOGGING BUFFERED 15000
+    ios_config:
+      lines:
+        - logging buffered 15000
+
+  - name: clear all counters
+    ios_command:
+      commands:
+        - command: 'clear counters'
+          prompt: 'Clear "show interface" counters on all interfaces \[confirm\]'
+          answer: 'y'
