@@ -26,15 +26,6 @@
       - logging enable
       - logging size 1000
 
-  - name: configure the login banner
-    ios_banner:
-      banner: login
-      text: |
-        this is my login banner
-        that contains a multiline
-        string
-      state: present
-
   - name: NO SERVICE PAD
     ios_config:
       lines:
