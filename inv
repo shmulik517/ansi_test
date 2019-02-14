@@ -1,0 +1,19 @@
+## Ansible Hosts File
+
+[ROUTERS]
+R2 ansible_host=192.168.33.135
+R4 ansible_host=192.168.33.135 ansible_port=104
+
+[ROUTERS:vars]
+ansible_username=cisco
+ansible_ssh_pass=cisco
+
+[SW_ROOT]
+SW5 ansible_host=192.168.33.135 ansible_port=101
+
+[SW_ROOT:vars]
+ansible_username=cisco
+ansible_ssh_pass=cisco
+
+[ios]
+SW5 ansible_host=192.168.33.135 ansible_port=101
